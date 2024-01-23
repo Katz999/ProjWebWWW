@@ -1,0 +1,60 @@
+    <?php
+    $nameErr = $emailErr = $messageErr = "";
+    $name = $email = $message = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($_POST["name"])) {
+            $nameErr = "Imię jest wymagane";
+        } else {
+            $name = test_input($_POST["name"]);
+        }
+
+        if (empty($_POST["email"])) {
+            $emailErr = "Email jest wymagany";
+        } else {
+            $email = test_input($_POST["email"]);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emailErr = "Nieprawidłowy format e-mail";
+            }
+        }
+
+        if (empty($_POST["message"])) {
+            $messageErr = "Treść wiadomości jest wymagana";
+        } else {
+            $message = test_input($_POST["message"]);
+        }
+
+        if (empty($nameErr) && empty($emailErr) && empty($messageErr)) {
+            $to = "164446@student.uwm.edu.pl";
+            $subject = "Pusty temat";
+            $headers = "From: $email";
+
+            mail($to, $subject, $message, $headers);
+        }
+    }
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+    ?>
+
+    <h2>Kontakt</h2>
+
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <label for="name">imie:</label>
+        <input type="text" id="name" name="name" value="<?php echo $name; ?>" required>
+        <span class="error"><?php echo $nameErr; ?></span>
+
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" value="<?php echo $email; ?>" required>
+        <span class="error"><?php echo $emailErr; ?></span>
+
+        <label for="message">Wiadomość:</label>
+        <textarea id="message" name="message" rows="4" required><?php echo $message; ?></textarea>
+        <span class="error"><?php echo $messageErr; ?></span>
+
+        <input type="submit" value="Wyślij">
+    </form>
