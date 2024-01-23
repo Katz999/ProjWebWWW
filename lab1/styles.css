@@ -1,0 +1,29 @@
+body {background-image: url("background.jpg");}
+.divtest {
+	background-color: purple;
+	color: white;
+	text-align: center;
+	}	
+p {
+  font-size: 20px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  background-color:#FFF000"
+}
+ th:hover {background-color: #D6EEEE;}
+#leftim {
+float: right;
+margin: 0 0 0 15px;
+}
+
+#rightim {
+float: left;
+margin: 0 15px 0 0;
+}
