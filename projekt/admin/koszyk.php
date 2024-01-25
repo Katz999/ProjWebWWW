@@ -1,34 +1,28 @@
 <?php
-// Import konfiguracji
 include('../cfg.php');
-
-// Inicjalizacja sesji
 session_start();
 
-// Funkcja do wylogowywania użytkownika
 function Wyloguj()
 {
-    // Zniszczenie sesji
+    session_start();
     session_destroy();
-    
-    // Przekierowanie do strony logowania
     header("Location: ../index.php");
     exit();
 }
 
-// Funkcja generująca przycisk do wylogowywania
+//generuj przycisk do wylogowania
 function WylogujButton()
 {
     echo '<form method="get">
-            <input name="wylogowywanie" type="submit" value="Wyloguj"></button>
+            <input name= "wylogowywanie" type="submit" value="Wyloguj"></button>
           </form>';
 }
 
-// Sprawdzenie, czy naciśnięto przycisk wylogowywania
 if(isset($_GET['wylogowywanie']) && $_GET['wylogowywanie']=='Wyloguj')
 {
     Wyloguj();
 }
+
 
 // Funkcja pobierająca informacje o produkcie z bazy danych
 function getProductFromDatabase($conn, $productId) {
@@ -39,13 +33,11 @@ function getProductFromDatabase($conn, $productId) {
     $result = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result);
 }
-
 // Funkcja dodająca produkt do koszyka
 function addToCart($conn, $productId, $quantity) {
     $product = getProductFromDatabase($conn, $productId);
-    
     if($product) {
-        // Sprawdzenie dostępności produktu
+        // Sprawdź dostępność produktu
         if($product['ilosc_sztuk'] < $quantity) {
             echo 'Niestety, dostępna ilość produktu ' . $product['tytul'] . ' to tylko ' . $product['ilosc_sztuk'] . '.<br>';
             return;
@@ -55,9 +47,9 @@ function addToCart($conn, $productId, $quantity) {
             $_SESSION['cart'] = array();
         }
 
-        // Sprawdzenie czy produkt znajduje się już w koszyku
+        // Sprawdzenie czy produkt znajduje sie juz w koszyku
         if(array_key_exists($productId, $_SESSION['cart'])) {
-            // Sprawdzenie dostępności produktu po dodaniu go do koszyka
+            // Sprzwdzenie dostepnosci produktu po dodaniu go do koszyka
             if($product['ilosc_sztuk'] < $_SESSION['cart'][$productId]['quantity'] + $quantity) {
                 echo 'Niestety, dostępna ilość produktu ' . $product['tytul'] . ' to tylko ' . $product['ilosc_sztuk'] . ', a próbujesz dodać ' . ($_SESSION['cart'][$productId]['quantity'] + $quantity) . '.<br>';
                 return;
@@ -78,6 +70,7 @@ function removeFromCart($productId) {
     unset($_SESSION['cart'][$productId]);
 }
 
+
 // Funkcja zmieniająca ilość produktu w koszyku
 function editQuantityInCart($productId, $newQuantity) {
     if(array_key_exists($productId, $_SESSION['cart']) && $newQuantity > 0) {
@@ -89,7 +82,6 @@ function editQuantityInCart($productId, $newQuantity) {
 function calculateGrossPrice($netPrice, $vat) {
     return $netPrice * (1 + $vat/100);
 }
-
 // Funkcja wyświetlająca zawartość koszyka
 function showCart() {
     if(!isset($_SESSION['cart'])) {
@@ -99,19 +91,17 @@ function showCart() {
 
     $totalPriceGross = 0;
     echo '<h2>Zawartość koszyka:</h2>';
-    
     foreach ($_SESSION['cart'] as $productId => $productDetails) {
         $totalPriceGross += $productDetails['priceGross'] * $productDetails['quantity'];
-        
         echo 'Produkt ID: ' . $productId . '<br>';
         echo 'Ilość: ' . $productDetails['quantity'] . '<br>';
         echo 'Cena netto: ' . $productDetails['priceNet'] . '<br>';
         echo 'Cena brutto: ' . $productDetails['priceGross'] . '<br>';
         echo '------------------<br>';
     }
-    
     echo "Suma cen (brutto): " . $totalPriceGross;
 }
+
 
 // Funkcja wyświetlająca formularz dodawania produktu do koszyka
 function DodajDoKoszykaForm($conn) {
@@ -123,7 +113,6 @@ function DodajDoKoszykaForm($conn) {
 
     $query = "SELECT * FROM produkty";
     $result = mysqli_query($conn, $query);
-    
     while ($row = mysqli_fetch_assoc($result)) {
         echo '<option value="' . $row['id'] . '">' . $row['id'] . ' - ' . $row['tytul'] . '</option>';
     }
@@ -202,13 +191,12 @@ function PokazKoszykForm() {
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/admin.css">
-    <title>Koszyk</title>
+    <title> Koszyk</title>
 </head>
 
 <body>
     <div class="container">
         <?php
-            // Wywołania funkcji do obsługi koszyka
             WylogujButton();
             DodajDoKoszykaForm($conn);
             EdytujIloscWKoszykuForm();
@@ -216,7 +204,7 @@ function PokazKoszykForm() {
             PokazKoszykForm();
         ?>
     </div>
+
 </body>
 
 </html>
-

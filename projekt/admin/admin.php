@@ -7,11 +7,14 @@ function FormularzLogowania()
 
     // Sprawdzenie, czy formularz został wysłany
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Sprawdzenie, czy wprowadzone dane są poprawne
         if ($_POST['login'] == $login && $_POST['pass'] == $pass) {
+            // Ustawienie sesji
             $_SESSION['zalogowany'] = true;
-            header('Location: control_panel.php');
+            header('Location: control_panel.php'); // Przekierowanie do panelu administracyjnego
             exit;
         } else {
+            // Wyświetlenie błędu
             echo 'Błędny login lub hasło!';
         }
     }

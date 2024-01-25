@@ -2,7 +2,9 @@
 
 include('../cfg.php');
 
-// Funkcja do wylogowywania użytkownika
+
+//                Funkcja odpowiadająca za wylogowywanie
+
 function Wyloguj()
 {
     session_start();
@@ -11,7 +13,8 @@ function Wyloguj()
     exit();
 }
 
-// Funkcja generująca przycisk do wylogowywania
+//              Przycisk wylogowywania
+
 function WylogujButton()
 {
     echo '<form method="get">
@@ -19,38 +22,44 @@ function WylogujButton()
           </form>';
 }
 
-// Sprawdzenie, czy naciśnięto przycisk wylogowywania
 if(isset($_GET['wylogowywanie']) && $_GET['wylogowywanie']=='Wyloguj')
 {
     Wyloguj();
 }
 
-// Funkcja generująca przycisk do przełączania się między stronami
+//              Przycisk do zmiany strony
+
 function SwitchSite($url, $tekstPrzycisku) {
     echo '<form action="' . $url . '">';
     echo '<input type="submit" value="' . $tekstPrzycisku . '">';
     echo '</form>';
 }
 
-// Funkcja dodająca nową kategorię
+// Funkcja odpowiadająca za dodawanie kategorii do bazie danych
+
 function DodajKategorie($conn, $nazwa, $matka = 0) {
     $query = "INSERT INTO categories (nazwa, matka) VALUES ('$nazwa', $matka)";
     mysqli_query($conn, $query);
 }
 
-// Funkcja usuwająca kategorię
+//Funkcja odpowiadająca za usuwanie kategorii z bazy danych
+
 function UsunKategorie($conn, $id) {
     $query = "DELETE FROM categories WHERE id = $id LIMIT 1";
     mysqli_query($conn, $query);
 }
 
-// Funkcja edytująca kategorię
+
+//  Funkcja odpowiadająca za usuwanie edycję kategorii w bazie danych
+
 function EdytujKategorie($conn, $id, $nazwa, $matka) {
     $query = "UPDATE categories SET nazwa = '$nazwa', matka = $matka WHERE id = $id LIMIT 1";
     mysqli_query($conn, $query);
 }
 
-// Funkcja rekurencyjnie wyświetlająca kategorie
+
+// Funkcja odpowiadająca za wyświetlanie kategorii oraz podkategorii
+
 function PokazKategorie($conn, $matka = 0, $prefix = '') {
     $query = "SELECT * FROM categories WHERE matka = $matka";
     $result = mysqli_query($conn, $query);
@@ -61,7 +70,9 @@ function PokazKategorie($conn, $matka = 0, $prefix = '') {
     }
 }
 
-// Funkcja generująca formularz dodawania kategorii
+
+//  Funkcja odpowiadająca za wyświetlanie formularza który wypełniamy
+
 function DodajKategorieForm($conn) {
     echo '
     <h1>Dodaj nową kategorię</h1>
@@ -82,7 +93,9 @@ function DodajKategorieForm($conn) {
     }
 }
 
-// Funkcja generująca formularz usuwania kategorii
+
+//  Funkcja odpowiadająca za wyświetlanie formularza który wypełniamy
+
 function UsunKategorieForm($conn) {
     echo '
     <h1>Usuń kategorię</h1>
@@ -99,7 +112,10 @@ function UsunKategorieForm($conn) {
     }
 }
 
-// Funkcja generująca formularz edytowania kategorii
+
+//     Funkcja odpowiadająca za wyświetlanie formularza który wypełniamy
+
+
 function EdytujKategorieForm($conn) {
     echo '
     <h1>Edytuj kategorię</h1>
@@ -120,6 +136,9 @@ function EdytujKategorieForm($conn) {
     }
 }
 
+
+//   Poniżej znajduje się podstawowy szkelet strony wraz z wywołaniami poszczególnych funkcji
+
 ?>
 
 <!DOCTYPE html>
@@ -127,22 +146,24 @@ function EdytujKategorieForm($conn) {
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/admin.css">
-    <title>Kategorie</title>
+    <title> Kategorie</title>
 </head>
 
 <body>
     <div class="container">
         <?php
+        echo WylogujButton();
         echo SwitchSite('products.php', 'Produkty');
         echo SwitchSite('control_panel.php', 'Podstrony');
         DodajKategorieForm($conn);
         EdytujKategorieForm($conn);
         UsunKategorieForm($conn);
         PokazKategorie($conn);
-        echo WylogujButton();
         ?>
     </div>
+
 </body>
 
 </html>
+
 

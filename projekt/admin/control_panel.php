@@ -2,7 +2,12 @@
 
 include('../cfg.php');
 
-// Funkcja do wylogowywania użytkownika
+
+//              ******************************************
+//                Funkcja odpowiadająca za wylogowywanie
+//              ******************************************
+
+
 function Wyloguj()
 {
     session_start();
@@ -11,7 +16,10 @@ function Wyloguj()
     exit();
 }
 
-// Funkcja generująca przycisk do wylogowywania
+//             ************************
+//              Przycisk wylogowywania
+//             ************************
+
 function WylogujButton()
 {
     echo '<form method="get">
@@ -19,33 +27,45 @@ function WylogujButton()
           </form>';
 }
 
-// Sprawdzenie, czy naciśnięto przycisk wylogowywania
 if(isset($_GET['wylogowywanie']) && $_GET['wylogowywanie']=='Wyloguj')
 {
     Wyloguj();
 }
 
-// Funkcja generująca przycisk do przełączania się między stronami
+//             ***************************
+//              Przycisk do zmiany strony
+//             ***************************
+
 function SwitchSite($url, $tekstPrzycisku) {
     echo '<form action="' . $url . '">';
     echo '<input type="submit" value="' . $tekstPrzycisku . '">';
     echo '</form>';
 }
 
-// Funkcja wyświetlająca listę podstron
+// funkcja do wyświetlania listy podstron
+
+//             ************************************************
+//                  funkcja do wyświetlania listy podstron
+//             ************************************************
+
+
 function ListaPodstron() {
     global $conn;
     
     $query = "SELECT id, page_title FROM page_list";
+    // $result = $conn->query($query);
     $result = mysqli_query($conn, $query);
     echo "<h2>Lista Podstron</h2>";
-    
     while($row = mysqli_fetch_array($result)){
         echo '<p>' .$row['id'] . ' ' .$row['page_title']. '</p>';
     }
 }
 
-// Funkcja wyświetlająca formularz edycji podstrony
+
+//             *********************************************************
+//                Funkcja która wyświetla formularz do edyji podstrony
+//             *********************************************************
+
 function EdytujPodstrone() {
 
     $edit = '
@@ -83,7 +103,10 @@ function EdytujPodstrone() {
     }
 }
 
-// Funkcja wyświetlająca formularz dodawania nowej podstrony
+//             *********************************************************
+//                Funkcja która wyświetla formularz do dodawania podstrony
+//             *********************************************************
+
 function DodajPodstrone() {
     $add = '
     <h2>Dodaj nową podstronę</h2>
@@ -111,7 +134,10 @@ function DodajPodstrone() {
     }
 }
 
-// Funkcja wyświetlająca formularz usuwania podstrony
+//             *********************************************************
+//                Funkcja która wyświetla formularz do usuwania podstrony
+//             *********************************************************
+
 function UsunPodstrone() {
     $del = '
     <h2>Usun Podstronę</h2>
@@ -133,30 +159,36 @@ function UsunPodstrone() {
     }
 }
 
+//             *****************************************************************************************
+//              Poniżej znajduje się podstawowy szkelet strony wraz z wywołaniami poszczególnych funkcji
+//             *****************************************************************************************
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/admin.css">
-    <title>Podstrony</title>
+    <title> Podstrony</title>
 </head>
 
 <body>
     <div class="container">
         <?php
-        echo ListaPodstron();
+        echo WylogujButton();
         echo SwitchSite('products.php', 'Produkty');
         echo SwitchSite('categories.php', 'Kategorie');
+        echo SwitchSite('koszyk.php', 'Koszyk');
         echo '<h2>Podstrony</h2>';
         echo EdytujPodstrone();
         echo DodajPodstrone();
-        echo UsunPodstrone();        
-        echo WylogujButton();
+        echo UsunPodstrone();
+        echo ListaPodstron();
         ?>
     </div>
+
 </body>
 
 </html>
-
